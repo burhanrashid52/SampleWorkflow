@@ -3,6 +3,9 @@ plugins {
     id 'kotlin-android'
 }
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -15,9 +18,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "APP_BASE_URL", localProperties['BASE_URL'])
+        buildConfigField("int", "APP_RETRY_ATTEMPTS", localProperties['RETRY_ATTEMPTS'])
+        buildConfigField("float", "APP_THRESHOLD_VALUE", localProperties['THRESHOLD_VALUE'])
     }
 
     buildTypes {
+        debug {
+            resValue("string", "maps_key", localProperties['MAP_KEY'])
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
